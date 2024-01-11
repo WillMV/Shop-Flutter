@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shopping/data/dummy_products.dart';
+import 'package:provider/provider.dart';
+import 'package:shopping/models/product_list.dart';
+import 'package:shopping/models/product_model.dart';
 import 'package:shopping/screens/product_detail_screen.dart';
 
 class ProductsOverviewScreen extends StatelessWidget {
@@ -7,6 +9,9 @@ class ProductsOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<ProductList>(context);
+    final products = provider.items;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Shopping'),
@@ -33,8 +38,13 @@ class ProductsOverviewScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 trailing: const Icon(Icons.shopping_cart),
-                leading: Icon(
-                  Icons.favorite_border,
+                leading: IconButton(
+                  onPressed: () {
+                    item.toogleFavorite();
+                  },
+                  icon: Icon(
+                    item.isFavorite ? Icons.favorite : Icons.favorite_border,
+                  ),
                   color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
@@ -57,5 +67,3 @@ class ProductsOverviewScreen extends StatelessWidget {
     );
   }
 }
-
-final products = dummyProducts;

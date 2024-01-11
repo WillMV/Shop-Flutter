@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopping/models/product_list.dart';
 import 'package:shopping/screens/products_overview_screen.dart';
 
 void main() {
@@ -13,15 +15,18 @@ class MyApp extends StatelessWidget {
     final theme = ThemeData(
       fontFamily: 'Lato',
     );
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: theme.copyWith(
-        colorScheme: theme.colorScheme.copyWith(
-          primary: Colors.deepPurple,
-          secondary: Colors.deepOrange,
+    return ChangeNotifierProvider(
+      create: (context) => ProductList(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: theme.copyWith(
+          colorScheme: theme.colorScheme.copyWith(
+            primary: Colors.deepPurple,
+            secondary: Colors.deepOrange,
+          ),
         ),
+        home: const ProductsOverviewScreen(),
       ),
-      home: const ProductsOverviewScreen(),
     );
   }
 }
