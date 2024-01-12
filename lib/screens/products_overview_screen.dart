@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopping/models/product_list.dart';
-import 'package:shopping/models/product_model.dart';
-import 'package:shopping/screens/product_detail_screen.dart';
+
+import '../models/product_model.dart';
+import '../models/product_list.dart';
+import '../widget/product_item.dart';
 
 class ProductsOverviewScreen extends StatelessWidget {
   const ProductsOverviewScreen({super.key});
@@ -28,39 +29,9 @@ class ProductsOverviewScreen extends StatelessWidget {
         itemCount: products.length,
         itemBuilder: (BuildContext context, int index) {
           final item = products[index];
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: GridTile(
-              footer: GridTileBar(
-                backgroundColor: Colors.black87,
-                title: Text(
-                  item.title,
-                  textAlign: TextAlign.center,
-                ),
-                trailing: const Icon(Icons.shopping_cart),
-                leading: IconButton(
-                  onPressed: () {
-                    item.toogleFavorite();
-                  },
-                  icon: Icon(
-                    item.isFavorite ? Icons.favorite : Icons.favorite_border,
-                  ),
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ProductDetailScreen(
-                            product: item,
-                          )));
-                },
-                child: Image.network(
-                  item.imageUrl,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+          return ChangeNotifierProvider(
+            create: (context) => item,
+            child: ProductItem(),
           );
         },
       ),
