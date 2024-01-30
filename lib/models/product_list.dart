@@ -3,9 +3,16 @@ import 'package:shopping/data/dummy_products.dart';
 import 'package:shopping/models/product_model.dart';
 
 class ProductList with ChangeNotifier {
-  final _items = dummyProducts;
+  final List<Product> _items = dummyProducts;
 
-  List<Product> get items => [..._items];
+  bool _showOnlyFavorites = false;
 
-  List<Product> get favorites => items.where((e) => e.isFavorite).toList();
+  List<Product> get items => _showOnlyFavorites
+      ? _items.where((e) => e.isFavorite).toList()
+      : [..._items];
+
+  void showOnlyFavorites(bool value) {
+    _showOnlyFavorites = value;
+    notifyListeners();
+  }
 }

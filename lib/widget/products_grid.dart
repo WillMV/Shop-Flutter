@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:shopping/models/product_list.dart';
 import 'package:shopping/widget/product_item.dart';
 
+import '../models/product_model.dart';
+
 class ProductsGrid extends StatelessWidget {
   const ProductsGrid({
     super.key,
@@ -11,24 +13,21 @@ class ProductsGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ProductList>(context);
-    final products = provider.products;
+    final List<Product> loadedProducts = provider.items;
 
     return GridView.builder(
+      padding: const EdgeInsets.all(10),
+      itemCount: loadedProducts.length,
+      itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+        value: loadedProducts[i],
+        child: ProductItem(),
+      ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: 15,
-        childAspectRatio: 1,
-        mainAxisSpacing: 15,
+        childAspectRatio: 3 / 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
       ),
-      padding: const EdgeInsets.all(15),
-      itemCount: products.length,
-      itemBuilder: (BuildContext context, int index) {
-        final item = products[index];
-        return ChangeNotifierProvider(
-          create: (context) => item,
-          child: const ProductItem(),
-        );
-      },
     );
   }
 }
