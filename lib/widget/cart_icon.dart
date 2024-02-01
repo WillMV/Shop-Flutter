@@ -15,9 +15,8 @@ class CartIcon extends StatelessWidget {
       children: [
         IconButton(
           onPressed: () => Navigator.of(context).pushNamed(AppRoutes.cart),
-          icon: Icon(
+          icon: const Icon(
             Icons.shopping_cart,
-            color: Theme.of(context).iconTheme.color,
           ),
         ),
         Positioned(

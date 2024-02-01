@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping/models/product_list.dart';
 import 'package:shopping/utils/routes.dart';
+import 'package:shopping/widget/app_drawer.dart';
 import 'package:shopping/widget/cart_Icon.dart';
 import 'package:shopping/widget/products_grid.dart';
 
@@ -13,6 +14,7 @@ class ProductsOverviewScreen extends StatelessWidget {
     final provider = Provider.of<ProductList>(context);
 
     return Scaffold(
+      drawer: const AppDrawer(),
       appBar: AppBar(
         title: Text(
           'My Shopping',
@@ -20,7 +22,6 @@ class ProductsOverviewScreen extends StatelessWidget {
         ),
         actions: [
           PopupMenuButton(
-            iconColor: Theme.of(context).iconTheme.color,
             onSelected: (value) {
               provider.showOnlyFavorites(value);
             },

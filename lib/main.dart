@@ -31,6 +31,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: theme.copyWith(
+          appBarTheme:
+              const AppBarTheme(iconTheme: IconThemeData(color: Colors.white)),
           colorScheme: theme.colorScheme.copyWith(
             primary: Colors.deepPurple,
             secondary: Colors.deepOrange,
