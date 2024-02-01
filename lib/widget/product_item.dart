@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopping/models/cart_model.dart';
+import 'package:shopping/utils/routes.dart';
 
 import '../models/product_model.dart';
-import '../screens/product_detail_screen.dart';
 
 class ProductItem extends StatelessWidget {
   const ProductItem({super.key});
@@ -10,6 +11,11 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(
+      context,
+      listen: false,
+    );
+
+    final cart = Provider.of<Cart>(
       context,
       listen: false,
     );
@@ -35,17 +41,17 @@ class ProductItem extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           trailing: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              cart.addItem(product);
+            },
             icon: const Icon(Icons.shopping_cart),
             color: Theme.of(context).colorScheme.secondary,
           ),
         ),
         child: GestureDetector(
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ProductDetailScreen(
-                      product: product,
-                    )));
+            Navigator.of(context)
+                .pushNamed(AppRoutes.productDetail, arguments: product);
           },
           child: Image.network(
             product.imageUrl,

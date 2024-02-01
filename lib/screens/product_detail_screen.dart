@@ -4,12 +4,12 @@ import 'package:shopping/models/product_model.dart';
 class ProductDetailScreen extends StatelessWidget {
   const ProductDetailScreen({
     super.key,
-    required this.product,
   });
-  final Product product;
 
   @override
   Widget build(BuildContext context) {
+    final Product product =
+        ModalRoute.of(context)!.settings.arguments as Product;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping/models/product_list.dart';
+import 'package:shopping/utils/routes.dart';
+import 'package:shopping/widget/cart_Icon.dart';
 import 'package:shopping/widget/products_grid.dart';
-
 
 class ProductsOverviewScreen extends StatelessWidget {
   const ProductsOverviewScreen({super.key});
@@ -13,10 +14,13 @@ class ProductsOverviewScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Shopping'),
+        title: Text(
+          'My Shopping',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         actions: [
           PopupMenuButton(
-            iconColor: Colors.black87,
+            iconColor: Theme.of(context).iconTheme.color,
             onSelected: (value) {
               provider.showOnlyFavorites(value);
             },
@@ -30,7 +34,8 @@ class ProductsOverviewScreen extends StatelessWidget {
                 child: Text('Show All'),
               )
             ],
-          )
+          ),
+          const CartIcon()
         ],
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
