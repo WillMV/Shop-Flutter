@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping/models/cart_item_model.dart';
 import 'package:shopping/models/cart_model.dart';
+import 'package:shopping/models/order_list.dart';
 import 'package:shopping/widget/cart_item.dart';
 
 class CartSreen extends StatefulWidget {
@@ -14,7 +15,9 @@ class CartSreen extends StatefulWidget {
 class _CartSreenState extends State<CartSreen> {
   @override
   Widget build(BuildContext context) {
+    final OrderList orderList = Provider.of<OrderList>(context, listen: false);
     final Cart cart = Provider.of<Cart>(context);
+
     final List<CartItemModel> items = cart.items;
 
     return Scaffold(
@@ -51,7 +54,14 @@ class _CartSreenState extends State<CartSreen> {
                       ),
                     ),
                     const Spacer(),
-                    TextButton(onPressed: () {}, child: const Text('Buy')),
+                    TextButton(
+                        onPressed: () {
+                          if (cart.items.isNotEmpty) {
+                            orderList.addOrder(cart);
+                            cart.clear();
+                          }
+                        },
+                        child: const Text('Buy')),
                   ]),
             ),
           ),

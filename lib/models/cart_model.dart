@@ -6,7 +6,7 @@ class Cart with ChangeNotifier {
   final List<CartItemModel> _items = [];
 
   List<CartItemModel> get items {
-    return _items;
+    return [..._items];
   }
 
   double get fullPrice {
@@ -43,6 +43,11 @@ class Cart with ChangeNotifier {
 
   void removeItem(CartItemModel item) {
     _items.remove(item);
+    notifyListeners();
+  }
+
+  void clear() {
+    _items.clear();
     notifyListeners();
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping/models/product_list.dart';
-import 'package:shopping/utils/routes.dart';
 import 'package:shopping/widget/app_drawer.dart';
 import 'package:shopping/widget/cart_Icon.dart';
 import 'package:shopping/widget/products_grid.dart';
@@ -38,7 +37,6 @@ class ProductsOverviewScreen extends StatelessWidget {
           ),
           const CartIcon()
         ],
-        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: const ProductsGrid(),
     );
