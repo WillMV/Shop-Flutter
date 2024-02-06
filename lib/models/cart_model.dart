@@ -50,4 +50,16 @@ class Cart with ChangeNotifier {
     _items.clear();
     notifyListeners();
   }
+
+  void removeSingleItem(String productId) {
+    if (_items.any((element) => element.id == productId)) {
+      var item = _items.firstWhere((element) => element.id == productId);
+      if (item.quantity == 1) {
+        _items.remove(item);
+      } else {
+        item.quantity -= 1;
+      }
+      notifyListeners();
+    }
+  }
 }
