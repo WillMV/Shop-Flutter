@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping/models/order_list.dart';
-import 'package:shopping/models/order_model.dart';
 import 'package:shopping/widget/app_drawer.dart';
 import 'package:shopping/widget/order_item.dart';
 

@@ -16,7 +16,6 @@ class OrderList with ChangeNotifier {
       date: DateTime.now(),
       productList: cart.items,
     );
-    print(order.orderId.toString());
     _items.add(order);
 
     notifyListeners();
