@@ -11,8 +11,26 @@ class ProductList with ChangeNotifier {
       ? _items.where((e) => e.isFavorite).toList()
       : [..._items];
 
+  void addItem(Product item) {
+    if (!_items.any((element) => element.title == item.title)) {
+      _items.add(item);
+      notifyListeners();
+    }
+  }
+
   void showOnlyFavorites(bool value) {
     _showOnlyFavorites = value;
+    notifyListeners();
+  }
+
+  void updateProduct(Product item) {
+    _items.removeWhere((element) => element.id == item.id);
+    _items.add(item);
+    notifyListeners();
+  }
+
+  void deleteItem(String id) {
+    _items.removeWhere((element) => element.id == id);
     notifyListeners();
   }
 }

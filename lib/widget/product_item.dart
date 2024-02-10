@@ -1,73 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopping/models/cart_model.dart';
+import 'package:shopping/models/product_list.dart';
+import 'package:shopping/models/product_model.dart';
 import 'package:shopping/utils/routes.dart';
 
-import '../models/product_model.dart';
-
 class ProductItem extends StatelessWidget {
-  const ProductItem({super.key});
+  const ProductItem({
+    super.key,
+    required this.product,
+  });
+
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(
-      context,
-      listen: false,
-    );
+    final provider = Provider.of<ProductList>(context);
 
-    final cart = Provider.of<Cart>(
-      context,
-      listen: false,
-    );
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: GridTile(
-        footer: GridTileBar(
-          backgroundColor: Colors.black87,
-          leading: Consumer<Product>(
-            builder: (ctx, value, child) => IconButton(
-              onPressed: () {
-                product.toogleFavorite();
-              },
-              icon: Icon(
-                product.isFavorite ? Icons.favorite : Icons.favorite_border,
-              ),
-              color: Theme.of(context).colorScheme.secondary,
+    return Column(
+      children: [
+        ListTile(
+            leading: ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: Image.network(
+                  product.imageUrl,
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.cover,
+                )),
+            title: Text(
+              product.title,
+              style: const TextStyle(color: Colors.black, fontFamily: 'lato'),
             ),
-          ),
-          title: Text(
-            product.title,
-            textAlign: TextAlign.center,
-          ),
-          trailing: IconButton(
-            onPressed: () {
-              cart.addItem(product);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                backgroundColor: Colors.black,
-                content: Text('${product.title} added to cart'),
-                action: SnackBarAction(
-                    label: 'Undo',
-                    onPressed: () {
-                      cart.removeSingleItem(product.id);
-                    }),
-              ));
-            },
-            icon: const Icon(Icons.shopping_cart),
-            color: Theme.of(context).colorScheme.secondary,
-          ),
-        ),
-        child: GestureDetector(
-          onTap: () {
-            Navigator.of(context)
-                .pushNamed(AppRoutes.productDetail, arguments: product);
-          },
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
+            trailing: SizedBox(
+              width: 100,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRoutes.productForm,
+                            arguments: product);
+                      },
+                      icon: Icon(
+                        Icons.create,
+                        color: Theme.of(context).colorScheme.primary,
+                      )),
+                  IconButton(
+                      onPressed: () => showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text(
+                                  'Are you sure delete this product?'),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      provider.deleteItem(product.id);
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('yes')),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('No'),
+                                )
+                              ],
+                            ),
+                          ),
+                      icon: Icon(
+                        Icons.delete,
+                        color: Theme.of(context).colorScheme.error,
+                      ))
+                ],
+              ),
+            )),
+        const Divider(color: Colors.black12),
+      ],
     );
   }
 }

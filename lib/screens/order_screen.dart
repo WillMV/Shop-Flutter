@@ -21,9 +21,8 @@ class _OrderScreenState extends State<OrderScreen> {
     return Scaffold(
         drawer: const AppDrawer(),
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             'Orders',
-            style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
         body: ListView.builder(

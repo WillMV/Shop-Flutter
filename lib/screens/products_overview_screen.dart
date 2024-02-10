@@ -15,9 +15,8 @@ class ProductsOverviewScreen extends StatelessWidget {
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'My Shopping',
-          style: Theme.of(context).textTheme.titleLarge,
         ),
         actions: [
           PopupMenuButton(

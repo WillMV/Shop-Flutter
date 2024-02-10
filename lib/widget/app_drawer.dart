@@ -9,9 +9,8 @@ class AppDrawer extends StatelessWidget {
     return Drawer(
       child: Column(children: [
         AppBar(
-          title: Text(
+          title: const Text(
             'Wellcome',
-            style: Theme.of(context).textTheme.titleLarge,
           ),
           backgroundColor: Theme.of(context).colorScheme.primary,
           automaticallyImplyLeading: false,
@@ -25,16 +24,18 @@ class AppDrawer extends StatelessWidget {
                 context, AppRoutes.productsOverview);
           },
         ),
-        const Divider(
-          endIndent: 15,
-          indent: 15,
-        ),
         ListTile(
           onTap: () {
             Navigator.restorablePushReplacementNamed(context, AppRoutes.order);
           },
           leading: const Icon(Icons.credit_card),
           title: const Text('Orders'),
+        ),
+        ListTile(
+          onTap: () => Navigator.restorablePushReplacementNamed(
+              context, AppRoutes.products),
+          leading: const Icon(Icons.create_sharp),
+          title: const Text('Manage products'),
         )
       ]),
     );

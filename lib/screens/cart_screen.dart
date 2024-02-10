@@ -22,9 +22,8 @@ class _CartSreenState extends State<CartSreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Cart',
-          style: Theme.of(context).textTheme.titleLarge,
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
