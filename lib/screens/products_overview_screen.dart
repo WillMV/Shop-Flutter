@@ -5,8 +5,19 @@ import 'package:shopping/widget/app_drawer.dart';
 import 'package:shopping/widget/cart_Icon.dart';
 import 'package:shopping/widget/products_grid.dart';
 
-class ProductsOverviewScreen extends StatelessWidget {
+class ProductsOverviewScreen extends StatefulWidget {
   const ProductsOverviewScreen({super.key});
+
+  @override
+  State<ProductsOverviewScreen> createState() => _ProductsOverviewScreenState();
+}
+
+class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ProductList>(context, listen: false).getItemsByDB();
+  }
 
   @override
   Widget build(BuildContext context) {

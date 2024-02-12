@@ -47,7 +47,20 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           isLoading = true;
         });
 
-        provider.saveItem(_formData).then((value) {
+        provider.saveItem(_formData).catchError((error) {
+          return showDialog<void>(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Error!!!'),
+              content: Text(error.toString()),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Ok ;-;'))
+              ],
+            ),
+          );
+        }).then((value) {
           setState(() {
             isLoading = false;
           });

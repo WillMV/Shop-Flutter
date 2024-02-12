@@ -10,17 +10,13 @@ class ProductList with ChangeNotifier {
     baseUrl: dotenv.env[EnvironmentConfig.BASE_URL]!,
   ));
 
-  final List<Product> _items = dummyProducts;
+  final List<Product> _items = [];
 
   final String _path = '/products';
 
   bool _showOnlyFavorites = false;
 
   List<Product> get items {
-    if (_items.length <= 4) {
-      getItemsByDB();
-    }
-
     if (_showOnlyFavorites) {
       return _items.where((element) => element.isFavorite).toList();
     } else {
@@ -33,46 +29,41 @@ class ProductList with ChangeNotifier {
     notifyListeners();
   }
 
-  Future saveItem(Map<String, Object> data) async {
+  Future<void> saveItem(Map<String, Object> data) async {
     if (data['id'] != null) {
-      updateItem(data);
+      await updateItem(data);
     } else {
-      addItem(data);
+      await addItem(data);
     }
     notifyListeners();
   }
 
   Future<void> addItem(Map<String, Object> data) async {
     if (!_items.any((element) => element.title == data['title'])) {
-      try {
-        Response response = await _dio.post(
-          '$_path.json',
-          options: Options(contentType: 'application/json'),
-          data: data,
-        );
-        _items.add(Product(
-            id: response.data['name'],
-            title: data['title'].toString(),
-            imageUrl: data['imageUrl'].toString(),
-            description: data['description'].toString(),
-            price: data['price'] as double));
-      } catch (e) {
-        if (kDebugMode) {
-          print('saveItem().error: ${e.toString()}');
-        }
-      }
+      Response response = await _dio.post(
+        '$_path.json',
+        options: Options(contentType: 'application/json'),
+        data: {...data, 'isFavorite': false},
+      );
+      _items.add(Product(
+          id: response.data['name'],
+          title: data['title'] as String,
+          imageUrl: data['imageUrl'] as String,
+          description: data['description'] as String,
+          price: data['price'] as double));
     }
   }
 
-  void updateItem(Map<String, Object> data) async {
+  Future<void> updateItem(Map<String, Object> data) async {
     await _dio.put('$_path/${data['id']}.json', data: data);
     _items.removeWhere((element) => element.id == data['id']);
     _items.add(Product(
-        id: data['id'].toString(),
-        title: data['title'].toString(),
-        imageUrl: data['imageUrl'].toString(),
-        description: data['description'].toString(),
-        price: data['price'] as double));
+      id: data['id'] as String,
+      title: data['title'] as String,
+      imageUrl: data['imageUrl'] as String,
+      description: data['description'] as String,
+      price: data['price'] as double,
+    ));
   }
 
   void deleteItem(String id) async {
@@ -93,11 +84,13 @@ class ProductList with ChangeNotifier {
       final Map data = response.data;
       data.forEach((key, value) {
         _items.add(Product(
-            id: key,
-            title: value['title'],
-            imageUrl: value['imageUrl'],
-            description: value['description'],
-            price: value['price']));
+          id: key,
+          title: value['title'],
+          imageUrl: value['imageUrl'],
+          description: value['description'],
+          price: value['price'],
+          isFavorite: value['isFavorite'],
+        ));
       });
       notifyListeners();
     } catch (e) {

@@ -1,4 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shopping/utils/environment_variables.dart';
 
 class Product with ChangeNotifier {
   final String id;
@@ -17,8 +20,21 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  void toogleFavorite() {
+  final _dio = Dio(BaseOptions(
+    baseUrl: dotenv.env[EnvironmentConfig.BASE_URL]!,
+  ));
+  final String _path = '/products';
+
+  void toogleFavorite() async {
     isFavorite = !isFavorite;
+    _dio.put('$_path/$id.json', data: {
+      'id': id,
+      'title': title,
+      'description': description,
+      'imageUrl': imageUrl,
+      'price': price,
+      'isFavorite': isFavorite,
+    });
     notifyListeners();
   }
 
@@ -32,8 +48,8 @@ class Product with ChangeNotifier {
       'title': title,
       'description': description,
       'imageUrl': imageUrl,
-      'price': price.toString(),
-      'isFavorite': isFavorite.toString(),
+      'price': price,
+      'isFavorite': isFavorite,
     };
   }
 }
