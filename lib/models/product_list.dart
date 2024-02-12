@@ -1,20 +1,30 @@
-import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shopping/data/dummy_products.dart';
 import 'package:shopping/models/product_model.dart';
+import 'package:shopping/utils/environment_variables.dart';
 
 class ProductList with ChangeNotifier {
+  final _dio = Dio(BaseOptions(
+    baseUrl: dotenv.env[EnvironmentConfig.BASE_URL]!,
+  ));
+
   final List<Product> _items = dummyProducts;
+
+  final String _path = '/products';
 
   bool _showOnlyFavorites = false;
 
-  List<Product> get items => _showOnlyFavorites
-      ? _items.where((e) => e.isFavorite).toList()
-      : [..._items];
+  List<Product> get items {
+    if (_items.length <= 4) {
+      getItemsByDB();
+    }
 
-  void addItem(Product item) {
-    if (!_items.any((element) => element.title == item.title)) {
-      _items.add(item);
-      notifyListeners();
+    if (_showOnlyFavorites) {
+      return _items.where((element) => element.isFavorite).toList();
+    } else {
+      return [..._items];
     }
   }
 
@@ -23,14 +33,77 @@ class ProductList with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateProduct(Product item) {
-    _items.removeWhere((element) => element.id == item.id);
-    _items.add(item);
+  Future saveItem(Map<String, Object> data) async {
+    if (data['id'] != null) {
+      updateItem(data);
+    } else {
+      addItem(data);
+    }
     notifyListeners();
   }
 
-  void deleteItem(String id) {
-    _items.removeWhere((element) => element.id == id);
-    notifyListeners();
+  Future<void> addItem(Map<String, Object> data) async {
+    if (!_items.any((element) => element.title == data['title'])) {
+      try {
+        Response response = await _dio.post(
+          '$_path.json',
+          options: Options(contentType: 'application/json'),
+          data: data,
+        );
+        _items.add(Product(
+            id: response.data['name'],
+            title: data['title'].toString(),
+            imageUrl: data['imageUrl'].toString(),
+            description: data['description'].toString(),
+            price: data['price'] as double));
+      } catch (e) {
+        if (kDebugMode) {
+          print('saveItem().error: ${e.toString()}');
+        }
+      }
+    }
+  }
+
+  void updateItem(Map<String, Object> data) async {
+    await _dio.put('$_path/${data['id']}.json', data: data);
+    _items.removeWhere((element) => element.id == data['id']);
+    _items.add(Product(
+        id: data['id'].toString(),
+        title: data['title'].toString(),
+        imageUrl: data['imageUrl'].toString(),
+        description: data['description'].toString(),
+        price: data['price'] as double));
+  }
+
+  void deleteItem(String id) async {
+    try {
+      await _dio.delete('$_path/$id.json');
+      _items.removeWhere((element) => element.id == id);
+      notifyListeners();
+    } catch (e) {
+      if (kDebugMode) {
+        print('deleteItem().error ${e.toString()}');
+      }
+    }
+  }
+
+  getItemsByDB() async {
+    try {
+      final Response response = await _dio.get('$_path.json');
+      final Map data = response.data;
+      data.forEach((key, value) {
+        _items.add(Product(
+            id: key,
+            title: value['title'],
+            imageUrl: value['imageUrl'],
+            description: value['description'],
+            price: value['price']));
+      });
+      notifyListeners();
+    } catch (e) {
+      if (kDebugMode) {
+        print('getItemsByDB.error: ${e.toString()}');
+      }
+    }
   }
 }

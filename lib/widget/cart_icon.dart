@@ -14,7 +14,7 @@ class CartIcon extends StatelessWidget {
       alignment: Alignment.topRight,
       children: [
         IconButton(
-          onPressed: () => Navigator.of(context).pushNamed(AppRoutes.cart),
+          onPressed: () => Navigator.of(context).pushNamed(AppRoutes.CART),
           icon: const Icon(
             Icons.shopping_cart,
           ),

@@ -20,6 +20,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   String imageUrl = '';
 
   bool isUpdating = false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,40 +32,28 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
 
     if (hasProduct) {
       imageUrlController.text = product.imageUrl;
+      _formData['id'] = product.id;
       imageUrl = product.imageUrl;
       isUpdating = true;
     }
 
-    void onSubmit() {
-      _formkey.currentState?.validate();
+    void onSubmit() async {
+      bool isValidate = _formkey.currentState!.validate();
 
-      _formkey.currentState?.save();
-      final item = Product(
-        id: Random().nextDouble().toString(),
-        title: _formData['name'] as String,
-        imageUrl: imageUrl,
-        description: _formData['description'] as String,
-        price: double.parse(_formData['price'].toString()),
-      );
-      provider.addItem(item);
-      Navigator.pop(context);
-    }
+      if (isValidate) {
+        _formkey.currentState?.save();
 
-    void onUpdate() {
-      _formkey.currentState?.validate();
+        setState(() {
+          isLoading = true;
+        });
 
-      _formkey.currentState?.save();
-
-      final item = Product(
-        id: product!.id,
-        title: _formData['name'] as String,
-        imageUrl: imageUrl,
-        description: _formData['description'] as String,
-        price: double.parse(_formData['price'].toString()),
-      );
-
-      provider.updateProduct(item);
-      Navigator.pop(context);
+        provider.saveItem(_formData).then((value) {
+          setState(() {
+            isLoading = false;
+          });
+          Navigator.pop(context);
+        });
+      }
     }
 
     return Scaffold(
@@ -84,7 +73,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
                   initialValue: hasProduct ? product.title : null,
-                  onSaved: (name) => _formData['name'] = (name ?? ''),
+                  onSaved: (name) => _formData['title'] = (name ?? ''),
                   validator: (value) {
                     if (value!.trim().isEmpty) {
                       return 'The name field must be filled.';
@@ -211,8 +200,13 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 ),
               ),
               ElevatedButton(
-                  onPressed: () => isUpdating ? onUpdate() : onSubmit(),
-                  child: Text(isUpdating ? 'Update' : 'Submit'))
+                onPressed: () => onSubmit(),
+                child: Text(isUpdating ? 'Update' : 'Submit'),
+              ),
+              if (isLoading)
+                const Center(
+                  child: CircularProgressIndicator(),
+                )
             ],
           ),
         ),

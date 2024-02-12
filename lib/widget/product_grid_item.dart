@@ -61,7 +61,7 @@ class ProductGridItem extends StatelessWidget {
         child: GestureDetector(
           onTap: () {
             Navigator.of(context)
-                .pushNamed(AppRoutes.productDetail, arguments: product);
+                .pushNamed(AppRoutes.PRODUCT_DETAIL, arguments: product);
           },
           child: Image.network(
             product.imageUrl,

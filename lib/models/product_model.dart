@@ -24,6 +24,16 @@ class Product with ChangeNotifier {
 
   @override
   String toString() {
-    return title;
+    return 'title: $title, id: $id, description: $description, imageUr:l $imageUrl, isFavorite: $isFavorite, price: $price';
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'description': description,
+      'imageUrl': imageUrl,
+      'price': price.toString(),
+      'isFavorite': isFavorite.toString(),
+    };
   }
 }

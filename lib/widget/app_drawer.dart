@@ -21,19 +21,19 @@ class AppDrawer extends StatelessWidget {
           title: const Text('Shop'),
           onTap: () {
             Navigator.restorablePushReplacementNamed(
-                context, AppRoutes.productsOverview);
+                context, AppRoutes.PRODUCTS_OVERVIEW);
           },
         ),
         ListTile(
           onTap: () {
-            Navigator.restorablePushReplacementNamed(context, AppRoutes.order);
+            Navigator.restorablePushReplacementNamed(context, AppRoutes.ORDER);
           },
           leading: const Icon(Icons.credit_card),
           title: const Text('Orders'),
         ),
         ListTile(
           onTap: () => Navigator.restorablePushReplacementNamed(
-              context, AppRoutes.products),
+              context, AppRoutes.PRODUCTS),
           leading: const Icon(Icons.create_sharp),
           title: const Text('Manage products'),
         )
