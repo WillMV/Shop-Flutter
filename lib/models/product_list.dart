@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:shopping/data/dummy_products.dart';
 import 'package:shopping/models/product_model.dart';
 import 'package:shopping/utils/environment_variables.dart';
 
@@ -78,10 +77,13 @@ class ProductList with ChangeNotifier {
     }
   }
 
-  getItemsByDB() async {
+  Future<void> getItemsByDB() async {
     try {
       final Response response = await _dio.get('$_path.json');
       final Map data = response.data;
+
+      _items.clear();
+
       data.forEach((key, value) {
         _items.add(Product(
           id: key,

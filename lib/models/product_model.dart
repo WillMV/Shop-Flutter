@@ -27,12 +27,7 @@ class Product with ChangeNotifier {
 
   void toogleFavorite() async {
     isFavorite = !isFavorite;
-    _dio.put('$_path/$id.json', data: {
-      'id': id,
-      'title': title,
-      'description': description,
-      'imageUrl': imageUrl,
-      'price': price,
+    _dio.patch('$_path/$id.json', data: {
       'isFavorite': isFavorite,
     });
     notifyListeners();

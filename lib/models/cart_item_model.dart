@@ -21,4 +21,8 @@ class CartItemModel with ChangeNotifier {
   String toString() {
     return '{ id: $id,\n title: $title,\n price:$price,\n fullPrice: $fullPrice,\n quantity: $quantity } \n';
   }
+
+  Map<String, dynamic> toJson() {
+    return {'id': id, 'title': title, 'price': price, 'quantity': quantity};
+  }
 }

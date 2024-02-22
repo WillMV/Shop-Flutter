@@ -13,4 +13,13 @@ class Order with ChangeNotifier {
     required this.date,
     required this.productList,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'orderId': orderId,
+      'totalPrice': totalPrice,
+      'date': date.toString(),
+      'productList': productList.map((e) => e.toJson()).toList(),
+    };
+  }
 }

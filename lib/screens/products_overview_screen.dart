@@ -22,7 +22,6 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ProductList>(context);
-
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: AppBar(
@@ -48,7 +47,9 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           const CartIcon()
         ],
       ),
-      body: const ProductsGrid(),
+      body: RefreshIndicator(
+          onRefresh: () => provider.getItemsByDB(),
+          child: const ProductsGrid()),
     );
   }
 }

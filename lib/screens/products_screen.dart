@@ -25,13 +25,16 @@ class ProductsScreen extends StatelessWidget {
         ],
         title: const Text('Products'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: ListView.builder(
-          itemCount: products.length,
-          itemBuilder: (BuildContext context, int index) {
-            return ProductItem(product: products[index]);
-          },
+      body: RefreshIndicator(
+        onRefresh: () => provider.getItemsByDB(),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: ListView.builder(
+            itemCount: products.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ProductItem(product: products[index]);
+            },
+          ),
         ),
       ),
     );

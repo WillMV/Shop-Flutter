@@ -25,11 +25,27 @@ class _OrderScreenState extends State<OrderScreen> {
             'Orders',
           ),
         ),
-        body: ListView.builder(
-          itemCount: orderList.items.length,
-          itemBuilder: (context, index) => ChangeNotifierProvider.value(
-            value: orderList.items[index],
-            builder: (context, child) => const OrderItem(),
+        body: RefreshIndicator(
+          onRefresh: () => orderList.getOrdersByDb().catchError((error) {
+            return showDialog<void>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('Error!!!'),
+                content: Text(error.toString()),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Ok ;-;'))
+                ],
+              ),
+            );
+          }),
+          child: ListView.builder(
+            itemCount: orderList.items.length,
+            itemBuilder: (context, index) => ChangeNotifierProvider.value(
+              value: orderList.items[index],
+              builder: (context, child) => const OrderItem(),
+            ),
           ),
         ));
   }
