@@ -12,7 +12,30 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  bool expanded = false;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    final OrderList provider = Provider.of(context, listen: false);
+    if (provider.items.isEmpty) {
+      provider.getOrdersByDb().then((value) => _notLoading());
+    } else {
+      _notLoading();
+    }
+  }
+
+  // _loading() {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  // }
+
+  _notLoading() {
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,18 +58,28 @@ class _OrderScreenState extends State<OrderScreen> {
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text('Ok ;-;'))
+                      child: const Text('Close'))
                 ],
               ),
             );
           }),
-          child: ListView.builder(
-            itemCount: orderList.items.length,
-            itemBuilder: (context, index) => ChangeNotifierProvider.value(
-              value: orderList.items[index],
-              builder: (context, child) => const OrderItem(),
-            ),
-          ),
+          child: isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : orderList.items.isEmpty
+                  ? Center(
+                      child: Text(
+                        'Ainda não há pedidos realizados :(',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: orderList.items.length,
+                      itemBuilder: (context, index) =>
+                          ChangeNotifierProvider.value(
+                        value: orderList.items.reversed.toList()[index],
+                        builder: (context, child) => const OrderItem(),
+                      ),
+                    ),
         ));
   }
 }

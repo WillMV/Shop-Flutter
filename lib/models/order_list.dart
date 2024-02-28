@@ -1,33 +1,32 @@
-import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shopping/models/cart_item_model.dart';
 import 'package:shopping/models/cart_model.dart';
 import 'package:shopping/models/order_model.dart';
-import 'package:shopping/utils/environment_variables.dart';
+import 'package:shopping/utils/constants.dart';
 
 class OrderList with ChangeNotifier {
   final _dio = Dio(BaseOptions(
-    baseUrl: dotenv.env[EnvironmentConfig.BASE_URL]!,
+    baseUrl: Constants.USER_ORDERS_URL,
   ));
 
-  List<Order> _items = [];
+  final String _token;
+  final String _userId;
+  final List<Order> _items;
+
+  OrderList(this._token, this._userId, this._items);
 
   List<Order> get items => [..._items];
 
   Future<void> getOrdersByDb() async {
-    _items.clear();
-
     try {
-      var response = await _dio.get('/orders.json');
-      Map data = response.data;
-
+      Response response = await _dio.get('/$_userId.json?auth=$_token');
+      Map data = response.data ?? {};
+      _items.clear();
       data.forEach(
         (key, value) {
           List<dynamic> prodList = value['productList'];
-          var productList = prodList
+          List<CartItemModel> productList = prodList
               .map(
                 (e) => CartItemModel(
                     id: e['id'],
@@ -60,7 +59,7 @@ class OrderList with ChangeNotifier {
       DateTime date = DateTime.now();
       double fullPrice = cart.fullPrice;
 
-      Response response = await _dio.post('/orders.json', data: {
+      Response response = await _dio.post('/$_userId.json?auth=$_token', data: {
         'totalPrice': fullPrice,
         'date': date.toIso8601String(),
         'productList': cart.items.map((e) => e.toJson()).toList()

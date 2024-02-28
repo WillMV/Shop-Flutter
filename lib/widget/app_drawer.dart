@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopping/models/auth_model.dart';
 import 'package:shopping/utils/routes.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -20,8 +22,7 @@ class AppDrawer extends StatelessWidget {
           leading: const Icon(Icons.shop),
           title: const Text('Shop'),
           onTap: () {
-            Navigator.restorablePushReplacementNamed(
-                context, AppRoutes.PRODUCTS_OVERVIEW);
+            Navigator.restorablePushReplacementNamed(context, AppRoutes.HOME);
           },
         ),
         ListTile(
@@ -36,6 +37,14 @@ class AppDrawer extends StatelessWidget {
               context, AppRoutes.PRODUCTS),
           leading: const Icon(Icons.create_sharp),
           title: const Text('Manage products'),
+        ),
+        ListTile(
+          leading: const Icon(Icons.logout),
+          title: const Text('Logout'),
+          onTap: () {
+            Provider.of<Auth>(context, listen: false).logout();
+            Navigator.pushReplacementNamed(context, AppRoutes.HOME);
+          },
         )
       ]),
     );

@@ -16,7 +16,10 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ProductList>(context, listen: false).getItemsByDB();
+    final provider = Provider.of<ProductList>(context, listen: false);
+    if (provider.items.isEmpty) {
+      provider.getItemsByDB();
+    }
   }
 
   @override
@@ -49,7 +52,9 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       ),
       body: RefreshIndicator(
           onRefresh: () => provider.getItemsByDB(),
-          child: const ProductsGrid()),
+          child: provider.items.isEmpty
+              ? const Center(child: CircularProgressIndicator())
+              : const ProductsGrid()),
     );
   }
 }

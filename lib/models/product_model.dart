@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:shopping/utils/environment_variables.dart';
+import 'package:shopping/utils/constants.dart';
 
 class Product with ChangeNotifier {
   final String id;
@@ -21,15 +21,33 @@ class Product with ChangeNotifier {
   });
 
   final _dio = Dio(BaseOptions(
-    baseUrl: dotenv.env[EnvironmentConfig.BASE_URL]!,
+    baseUrl: Constants.USER_FAVORITES_URL,
   ));
-  final String _path = '/products';
 
-  void toogleFavorite() async {
+  Future<void> getfavoriteValue(String token, String userId) async {
+    try {
+      Response response = await _dio.get('/$userId/$id.json?auth=$token');
+      isFavorite = response.data ?? false;
+    } catch (e) {
+      if (kDebugMode) {
+        print('error: $e');
+      }
+    }
+  }
+
+  void toogleFavorite(String token, String userId) async {
     isFavorite = !isFavorite;
-    _dio.patch('$_path/$id.json', data: {
-      'isFavorite': isFavorite,
-    });
+    Response res = await _dio.patch('/$userId.json?auth=$token',
+        options: Options(
+          validateStatus: (status) => true,
+        ),
+        data: {
+          id: isFavorite,
+        });
+
+    if (res.data['error'] != null) {
+      isFavorite = !isFavorite;
+    }
     notifyListeners();
   }
 
@@ -44,7 +62,6 @@ class Product with ChangeNotifier {
       'description': description,
       'imageUrl': imageUrl,
       'price': price,
-      'isFavorite': isFavorite,
     };
   }
 }
